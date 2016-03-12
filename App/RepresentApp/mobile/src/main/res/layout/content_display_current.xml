@@ -11,9 +11,11 @@
     android:background="#4A6385"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.yhwinnie.representapp.DisplayCurrentActivity"
+
     tools:showIn="@layout/activity_display_current">
 
     <ListView
+        android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listView" />

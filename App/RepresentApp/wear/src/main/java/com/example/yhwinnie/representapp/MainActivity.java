@@ -2,99 +2,190 @@ package com.example.yhwinnie.representapp;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.wearable.view.DotsPageIndicator;
-import android.support.wearable.view.WatchViewStub;
-import android.view.View;
-import android.view.WindowInsets;
-import android.widget.TextView;
-import android.support.v4.view.GestureDetectorCompat;
-import android.support.wearable.view.GridViewPager;
 import android.view.MotionEvent;
-import android.widget.Toast;
-import android.view.View.OnTouchListener;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.RelativeLayout;
 import android.util.Log;
-import android.widget.ImageView;
-import android.view.ViewGroup;
+import android.view.View.OnTouchListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Member;
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
-    private float x1, y1;
-    static final int MIN_DISTANCE = 150;
-    private TextView mTextView;
-    private GestureDetectorCompat mDetector;
-    private static final String DEBUG_TAG = "Gestures";
-    private String TAG = MainActivity.class.getSimpleName();
 
+    private TextView mRepName;
+    private TextView mParty;
+    private RelativeLayout mainLayout;
+    private float x1, x2, y1, y2;
+
+    private ArrayList<Member> members = new ArrayList<Member>();
+
+    private int index = 0;
+
+    private String value;
+    private String state;
+    private String stateInitial;
+    private String county;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
+
+        mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
+
+        mRepName = (TextView) findViewById(R.id.textView9);
+
+        mParty = (TextView) findViewById(R.id.textView10);
+
+
+
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+
+        if (extras != null) {
+            String values = extras.getString("Path");
+            Log.d("T", values);
+
+            String split[] = values.split("\\|");
+
+            value = split[0];
+            county = split[1];
+
+            Log.d("T", value);
+            Log.d("T", "GGGG" + county);
+
+            JSONObject reader = null;
+            try {
+                reader = new JSONObject(value.toString());
+                JSONArray result = reader.optJSONArray("results");
+
+                JSONObject jsonObject = result.getJSONObject(index);
+
+                String firstName = jsonObject.optString("first_name").toString();
+                String lastName = jsonObject.optString("last_name").toString();
+                String party = jsonObject.optString("party").toString();
+
+                state = jsonObject.optString("state_name").toString();
+                stateInitial = jsonObject.optString("state").toString();
+
+                mRepName.setText(firstName + " " + lastName);
+                mParty.setText(party);
+
+                index = 1;
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+        mainLayout.setOnTouchListener(new OnTouchListener() {
             @Override
-            public void onLayoutInflated(WatchViewStub stub) {
-                mTextView = (TextView) stub.findViewById(R.id.text);
-                String message = getIntent().getStringExtra("message");
-                if (message == null || message.equalsIgnoreCase("")) {
-                    message = "Hello World!";
+            public boolean onTouch(View v, MotionEvent event) {
 
-                    ImageView imageView = (ImageView) findViewById(R.id.imageView2);
+                switch (event.getAction()) {
 
-                    imageView.setOnTouchListener(new View.OnTouchListener() {
-                        @Override
-                        public boolean onTouch(View view, MotionEvent event) {
-                            String s = "";
-                            s += "action=" + event.getAction();
-                            s += ", X=" + event.getX();
-                            s += ", Y=" + event.getY();
+                    //Get x and y coordinate
+                    case MotionEvent.ACTION_DOWN: {
+                        x1 = event.getX();
+                        y1 = event.getY();
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        x2 = event.getX();
+                        y2 = event.getY();
+                    }
 
-                            int i = 0;
-                            TextView Name = (TextView) findViewById(R.id.Name);
-                            TextView Party = (TextView) findViewById(R.id.Party);
-                            ImageView image = (ImageView) findViewById(R.id.imageView2);
+                    if (x1 > x2) {
+                        if (index < value.length() - 1) {
 
-                            if (i == 0) {
-                                Name.setText("Dianne Feinstein");
-                                Party.setText("Democrat");
-                                image.setImageResource(R.drawable.diannefeinstein);
-                                i += 1;
+                            JSONObject reader = null;
+                            try {
+                                reader = new JSONObject(value.toString());
+                                JSONArray result = reader.optJSONArray("results");
+
+                                JSONObject jsonObject = result.getJSONObject(index);
+
+                                String firstName = jsonObject.optString("first_name").toString();
+                                String lastName = jsonObject.optString("last_name").toString();
+                                String party = jsonObject.optString("party").toString();
+
+                                mRepName.setText(firstName + " " + lastName);
+
+                                mParty.setText(party);
+
+                                index += 1;
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                            if (i == 1) {
-                                Name.setText("Barbara Boxer");
-                                Party.setText("Democrat");
-                                image.setImageResource(R.drawable.barbaraboxer);
-                                i += 1;
-                            }
-
-                            if (i == 2) {
-                                Name.setText("Nancy Pelosi");
-                                Party.setText("Democrat");
-                                image.setImageResource(R.drawable.pelosi);
-                                i = 0;
-                            }
-
-                            return false;
+                        } else {
+                            break;
                         }
-                    });
-                    imageView.setOnGenericMotionListener(new View.OnGenericMotionListener() {
-                        @Override
-                        public boolean onGenericMotion(View view, MotionEvent event) {
-                            String s = "";
-                            s += "action=" + event.getAction();
-                            s += ", X=" + event.getX();
-                            s += ", Y=" + event.getY();
-                            Log.d(TAG, s);
-                            return false;
-                        }
-                    });
+
+
+                        //}
+                    } else if (y1 > y2) {
+                        //TO-DO: Slide from bottom to up animation
+
+                        Intent startIntent = new Intent(MainActivity.this, PresidentialVote.class);
+                        startIntent.putExtra("State", state);
+                        startIntent.putExtra("StateInitial", stateInitial);
+                        startIntent.putExtra("County", county);
+                        startActivity(startIntent);
+                    }
                 }
+                return false;
+            }
+
+        });
+
+
+        mainLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                JSONObject reader = null;
+                try {
+                    reader = new JSONObject(value.toString());
+                    JSONArray result = reader.optJSONArray("results");
+
+                    JSONObject jsonObject = result.getJSONObject(index);
+
+                    String termEnd = jsonObject.optString("term_end").toString();
+                    String party = jsonObject.optString("party").toString();
+                    String bioGuideID = jsonObject.optString("bioguide_id").toString();
+
+                    String info = termEnd + ", " + party + ", " + bioGuideID;
+
+                    Intent sendIntent = new Intent(getBaseContext(), WatchToPhoneService.class);
+                    sendIntent.putExtra("Info", info);
+                    startService(sendIntent);
+
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
     }
 }
+
+
+
 
 
 

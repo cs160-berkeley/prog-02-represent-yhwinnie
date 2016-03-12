@@ -8,19 +8,21 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="#E0E0E0"
-    tools:context="com.example.yhwinnie.representapp.DetailActivity">
+    tools:context="com.example.yhwinnie.representapp.DetailActivity"
+    android:scrollIndicators="top"
+    android:nestedScrollingEnabled="true">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView2"
-        android:maxHeight="700dp"
-        android:maxWidth="500dp"
+        android:maxHeight="200dp"
+        android:maxWidth="200dp"
         android:src="@drawable/diannefeinstein"
         android:adjustViewBounds="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/textView14" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -46,7 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Committee"
+        android:text="Committee:"
         android:id="@+id/textView10"
         android:textColor="#333333"
         android:layout_below="@+id/textView9"
@@ -59,51 +61,49 @@
         android:text="Bills Sponsored"
         android:textColor="#333333"
         android:id="@+id/textView11"
-        android:layout_below="@+id/textView10"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@+id/textView13"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="81dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Democrat"
+        android:text="Party"
         android:textColor="#333333"
         android:id="@+id/textView12"
-        android:textStyle="bold"
-        android:layout_marginStart="47dp"
         android:layout_above="@+id/textView9"
-        android:layout_toEndOf="@+id/textView9" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="House - Judiciary"
+        android:text="No Committee"
         android:textColor="#333333"
-        android:textStyle="bold"
         android:id="@+id/textView13"
-        android:layout_above="@+id/textView11"
-        android:layout_alignStart="@+id/textView12" />
+        android:layout_below="@+id/textView10"
+        android:layout_toEndOf="@+id/textView8"
+        android:autoText="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="January 3, 2017"
+        android:text="Date"
         android:textColor="#333333"
         android:id="@+id/textView14"
-        android:textStyle="bold"
-        android:layout_below="@+id/textView12"
+        android:layout_alignTop="@+id/textView9"
         android:layout_alignStart="@+id/textView12" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="H.R. 4290: Puerto Rico Emergency Financial Stability Act of 2015"
+        android:text="No Bills"
         android:id="@+id/textView15"
         android:textColor="#333333"
-        android:textStyle="bold"
         android:layout_alignTop="@+id/textView11"
-        android:layout_alignStart="@+id/textView13" />
+        android:layout_alignStart="@+id/textView14"
+        android:autoText="true" />
 </RelativeLayout>

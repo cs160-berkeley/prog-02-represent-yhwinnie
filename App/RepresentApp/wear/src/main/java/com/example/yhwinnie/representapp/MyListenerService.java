@@ -5,26 +5,36 @@ import android.util.Log;
 
 import com.google.android.gms.wearable.WearableListenerService;
 import com.google.android.gms.wearable.MessageEvent;
+import java.lang.reflect.Member;
 
 /**
  * Created by yhwinnie on 3/3/16.
  */
 public class MyListenerService extends WearableListenerService {
-    public static final String TAG = "MyDataMap.....";
-    public static final String WEARABLE_DATA_PATH = "/wearable/data/path";
+
+    // In PhoneToWatchService, we passed in a path, either "/FRED" or "/LEXY"
+    // These paths serve to differentiate different phone-to-watch messages
+    private static final String path_rep = "/phoneToWatch";
+    //private static final String PartyPath = "/Party";
+
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
-        if (messageEvent.getPath().equals(WEARABLE_DATA_PATH)) {
-            final String message = new String(messageEvent.getData());
-            Intent startIntent = new Intent(this, MainActivity.class);
-            startIntent.putExtra("message", message);
-            startIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(startIntent);
-            Log.d(TAG, "=========Main activity has been started=========");
-        }
-        super.onMessageReceived(messageEvent);
+        Log.d("T", "in WatchListenerService, got: " + messageEvent.getPath());
 
+        if (messageEvent.getPath().equalsIgnoreCase(path_rep)) {
+            final String value = new String(messageEvent.getData());
+            Intent startIntent = new Intent(this, MainActivity.class);
+            //you need to add this flag since you're starting a new activity from a service
+            startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startIntent.putExtra("Path", value);
+
+
+
+            startActivity(startIntent);
+        } else {
+            super.onMessageReceived(messageEvent);
+
+        }
     }
 }

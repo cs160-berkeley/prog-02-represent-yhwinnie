@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import java.util.ArrayList;
@@ -11,36 +12,56 @@ import java.util.List;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.util.Log;
 
 public class DisplayMessageActivity extends AppCompatActivity {
-    private List<Member> members = new ArrayList<Member>();
+    private ArrayList<Member> members = new ArrayList<Member>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_message);
 
-        populateMemberList();
-        populateListView();
+        //populateMemberList();
+        members = (ArrayList<Member>) getIntent().getSerializableExtra("Members_List");
+        ArrayAdapter<Member> adapter = new myListAdapter();
+        ListView list = (ListView) findViewById(R.id.listView);
+        list.setAdapter(adapter);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(final AdapterView<?> parent, View view, int position, long id) {
+                Member currentMember = members.get(position);
+                String termEnd = currentMember.getTermEnd();
+                String party = currentMember.getParty();
+                String bioID = currentMember.getBioGuideID();
+
+                String info = termEnd + ", " + party + ", " + bioID;
+
+                Intent requestLink = new Intent(DisplayMessageActivity.this, DetailActivity.class);
+                requestLink.putExtra("Info", info);
+
+                startActivity(requestLink);
+            }
+        });
     }
 
-    public void populateMemberList() {
-        members.add(new Member("DIANNE FEINSTEIN", "Democrat", "dfeinstein@gmail.com", "www.feinsteind.com", "@lastMessage", R.drawable.diannefeinstein));
-        members.add(new Member("BARBARA BOXER", "Democrat", "barb@gmail.com", "www.barbboxer.com", "@lastMessage", R.drawable.barbaraboxer));
-        members.add(new Member("NANCY PELOSI", "Democrat", "nancyp@gmail.com", "www.pelosinancy.com", "@lastMessage", R.drawable.pelosi));
-        members.add(new Member("JACKIE SPEIER", "Democrat", "jacksp@gmail.com", "www.speierjack.com", "@lastMessage", R.drawable.speier));
-    }
+
+
+
+
+
 
     public void populateListView() {
         ArrayAdapter<Member> adapter = new myListAdapter();
         ListView list = (ListView) findViewById(R.id.listView);
         list.setAdapter(adapter);
     }
-
-    public void detailButton(View view) {
-        Intent startDetailActivity = new Intent(this, DetailActivity.class);
-        startActivity(startDetailActivity);
-    }
+//
+//    public void detailButton(View view) {
+//        Intent startDetailActivity = new Intent(this, DetailActivity.class);
+//        startActivity(startDetailActivity);
+//    }
 
     private class myListAdapter extends ArrayAdapter<Member> {
         public myListAdapter() {
@@ -65,16 +86,16 @@ public class DisplayMessageActivity extends AppCompatActivity {
             name.setText(currentMember.getName());
 
             TextView party = (TextView) itemView.findViewById(R.id.textView4);
-            party.setText(currentMember.getParty());
+            party.setText("Party: " + currentMember.getParty());
 
             TextView email = (TextView) itemView.findViewById(R.id.textView5);
-            email.setText(currentMember.getEmail());
+            email.setText("Email: " + currentMember.getEmail());
 
             TextView link = (TextView) itemView.findViewById(R.id.textView6);
             link.setText(currentMember.getLink());
 
             TextView tweet = (TextView) itemView.findViewById(R.id.textView7);
-            tweet.setText(currentMember.getTweet());
+            tweet.setText("@" + currentMember.getTweet());
 
             return itemView;
 

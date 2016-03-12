@@ -51,6 +51,10 @@
             </activity>
         </application>
 
+        <service android:name=".CurrentLocationServices"/>
+
+        <service android:name=".WatchToPhoneService" />
+
         <service android:name=".MyListenerService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />

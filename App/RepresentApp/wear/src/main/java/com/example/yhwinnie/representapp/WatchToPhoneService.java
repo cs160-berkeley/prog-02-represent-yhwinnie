@@ -13,7 +13,7 @@ import com.google.android.gms.wearable.Wearable;
 import android.util.Log;
 
 
-public class PhoneToWatchService extends Service {
+public class WatchToPhoneService extends Service {
 
 
     private GoogleApiClient mApiClient;
@@ -48,11 +48,14 @@ public class PhoneToWatchService extends Service {
         // which was passed over when we called startService
         Bundle extras = intent.getExtras();
 
-        final String JSON = extras.getString("JSON");
-        final String path = extras.getString("Path");
-        final String name = extras.getString("Name");
-        final String party = extras.getString("Party");
-        final String index = extras.getString("Index");
+//        final String JSON = extras.getString("JSON");
+//        final String path = extras.getString("Path");
+//        final String name = extras.getString("Name");
+//        final String party = extras.getString("Party");
+//        final String index = extras.getString("Index");
+
+        final String info = extras.getString("Info");
+        final String path = "send_toast";
 
         // Send the message with the representative's name
         new Thread(new Runnable() {
@@ -62,8 +65,8 @@ public class PhoneToWatchService extends Service {
                 mApiClient.connect();
                 //now that you're connected, send a message with the representative name
 //                String value = name + ", " + party + ", " + index;
-                Log.d("T", JSON);
-                sendMessage("/" + path, JSON);
+                Log.d("T", info);
+                sendMessage("/" + path, info);
             }
         }).start();
 
