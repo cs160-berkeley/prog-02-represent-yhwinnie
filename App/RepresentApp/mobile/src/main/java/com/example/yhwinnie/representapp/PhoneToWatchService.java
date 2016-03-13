@@ -50,9 +50,6 @@ public class PhoneToWatchService extends Service {
 
         final String JSON = extras.getString("JSON");
         final String path = extras.getString("Path");
-        final String name = extras.getString("Name");
-        final String party = extras.getString("Party");
-        final String index = extras.getString("Index");
 
         // Send the message with the representative's name
         new Thread(new Runnable() {

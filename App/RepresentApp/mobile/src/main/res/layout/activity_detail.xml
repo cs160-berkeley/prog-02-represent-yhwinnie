@@ -7,103 +7,125 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#E0E0E0"
+    android:background="#FFFFFF"
     tools:context="com.example.yhwinnie.representapp.DetailActivity"
     android:scrollIndicators="top"
     android:nestedScrollingEnabled="true">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
-        android:maxHeight="200dp"
-        android:maxWidth="200dp"
-        android:src="@drawable/diannefeinstein"
-        android:adjustViewBounds="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/textView14" />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView"
+        android:fillViewport="false">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Party"
-        android:id="@+id/textView8"
-        android:textColor="#333333"
-        android:layout_below="@+id/imageView2"
-        android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="End Date of Term"
-        android:id="@+id/textView9"
-        android:textColor="#333333"
-        android:layout_below="@+id/textView8"
-        android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Committee:"
-        android:id="@+id/textView10"
-        android:textColor="#333333"
-        android:layout_below="@+id/textView9"
-        android:layout_alignParentStart="true" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Bills Sponsored"
-        android:textColor="#333333"
-        android:id="@+id/textView11"
-        android:layout_below="@+id/textView13"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="81dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Party"
-        android:textColor="#333333"
-        android:id="@+id/textView12"
-        android:layout_above="@+id/textView9"
-        android:layout_centerHorizontal="true" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView2"
+                android:src="@drawable/diannefeinstein"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:maxHeight="250dp"
+                android:maxWidth="300dp"
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="No Committee"
-        android:textColor="#333333"
-        android:id="@+id/textView13"
-        android:layout_below="@+id/textView10"
-        android:layout_toEndOf="@+id/textView8"
-        android:autoText="true" />
+                android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Date"
-        android:textColor="#333333"
-        android:id="@+id/textView14"
-        android:layout_alignTop="@+id/textView9"
-        android:layout_alignStart="@+id/textView12" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Party"
+                android:textSize="20sp"
+                android:textColor="#333333"
+                android:id="@+id/textView12"
+                android:enabled="true"
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="No Bills"
-        android:id="@+id/textView15"
-        android:textColor="#333333"
-        android:layout_alignTop="@+id/textView11"
-        android:layout_alignStart="@+id/textView14"
-        android:autoText="true" />
+                android:layout_below="@id/imageView2" />
+
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="End Date of Term:"
+            android:id="@+id/textView9"
+            android:textSize="12sp"
+            android:textColor="#333333"
+                android:layout_below="@id/textView12"
+            android:autoText="true"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Date"
+                android:id="@+id/textView14"
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                android:layout_below="@id/textView9" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Committees:"
+                android:id="@+id/textView10"
+                android:textSize="12sp"
+                android:textColor="#333333"
+                android:textStyle="bold"
+                android:layout_below="@+id/textView14"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginStart="10dp"
+                android:text="No Committee"
+                android:textSize="12sp"
+                android:id="@+id/textView11"
+                android:layout_below="@+id/textView10"
+                android:layout_toEndOf="@+id/textView12" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Bills Sponsored:"
+                android:textColor="#333333"
+                android:id="@+id/textView13"
+                android:textSize="12sp"
+                android:autoText="true"
+                android:textStyle="bold"
+                android:layout_below="@+id/textView11"
+                android:layout_alignParentStart="true" />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_marginStart="10dp"
+                android:text="No Bills"
+                android:id="@+id/textView15"
+                android:textSize="12sp"
+                android:layout_below="@+id/textView13"
+                 />
+
+        </LinearLayout>
+    </ScrollView>
+
+
 </RelativeLayout>

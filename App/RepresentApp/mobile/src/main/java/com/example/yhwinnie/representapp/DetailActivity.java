@@ -1,24 +1,29 @@
 package com.example.yhwinnie.representapp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
+
 import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
+import android.widget.ImageView;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -28,16 +33,23 @@ public class DetailActivity extends AppCompatActivity {
     private TextView billsView;
     private String committee;
     private String bills;
+    private ImageView image;
+
+    private Toolbar mActionBarToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_detail);
+
 
         partyView = (TextView) findViewById(R.id.textView12);
         endTermView = (TextView) findViewById(R.id.textView14);
-        committeeView = (TextView) findViewById(R.id.textView13);
+        committeeView = (TextView) findViewById(R.id.textView11);
         billsView = (TextView) findViewById(R.id.textView15);
+        image = (ImageView) findViewById(R.id.imageView2);
 
         committee = "";
         bills = "";
@@ -48,17 +60,40 @@ public class DetailActivity extends AppCompatActivity {
         String party = splitted[1];
         String termEnd = splitted[0];
         final String bioGuideID = splitted[2];
+        String name = splitted[3];
+
+//        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(mActionBarToolbar);
+//        getSupportActionBar().setTitle(name);
+
+        ////https://theunitedstates.io/images/congress/[size]/[bioguide].jpg
+        String url = "https://theunitedstates.io/images/congress/450x550/"+bioGuideID+".jpg";
+
+        try {
+            URL imageURL = new URL(url);
+            Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(url).getContent());
+            image.setImageBitmap(bitmap);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
-        partyView.setText(party);
-        endTermView.setText(termEnd);
+
+        if (party.equalsIgnoreCase("D")) {
+            partyView.setText("Democrat");
+        }else {
+            partyView.setText("Republican");
+        }
+        endTermView.setText(termEnd + "\n");
 
         Thread thread = new Thread(new Runnable(){
             @Override
             public void run() {
                 try {
                     printCommittee(bioGuideID);
-                    printBills(bioGuideID);
+                    //printBills(bioGuideID);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -102,11 +137,20 @@ public class DetailActivity extends AppCompatActivity {
 
                     //int firstName = Integer.parseInt(jsonObject.optString("first_name").toString());
                     //String committee = jsonObject.optString("name").toString();
-                    committee += jsonObject.optString("name").toString() + ", ";
+                    committee += jsonObject.optString("name").toString() + "\n";
+                    Log.d("T", committee);
 
                 }
-                committeeView.setText(committee);
-                committee = "";
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!committee.equalsIgnoreCase("")) {
+                            committeeView.setText(committee);
+                            committee = "";
+                        }
+                    }
+                });
+
             } catch (JSONException e) {
                 // Handle Error
             }
@@ -115,17 +159,15 @@ public class DetailActivity extends AppCompatActivity {
         finally {
             urlConnection.disconnect();
         }
-    }
 
-    public void printBills(String bioGuideID) throws IOException {
         //congress.api.sunlightfoundation.com/bills?sponsor_id=S001175&apikey=fcf68604828148359ae76a9a23ebfd71
 
-        String apikey = "fcf68604828148359ae76a9a23ebfd71";
-        String baseURL = "https://congress.api.sunlightfoundation.com";
-        String zipCodeAddition = "/bills?sponsor_id="+bioGuideID+"&apikey="+apikey;
-        String url = baseURL + zipCodeAddition;
-        URL apiUrl = new URL(url);
-        HttpsURLConnection urlConnection = (HttpsURLConnection) apiUrl.openConnection();
+        apikey = "fcf68604828148359ae76a9a23ebfd71";
+        baseURL = "https://congress.api.sunlightfoundation.com";
+        zipCodeAddition = "/bills?sponsor_id="+bioGuideID+"&apikey="+apikey;
+        url = baseURL + zipCodeAddition;
+        apiUrl = new URL(url);
+        urlConnection = (HttpsURLConnection) apiUrl.openConnection();
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection
                     .getInputStream()));
@@ -135,7 +177,7 @@ public class DetailActivity extends AppCompatActivity {
                 stringBuilder.append(line).append("\n");
             }
             bufferedReader.close();
-            Log.d ("T", stringBuilder.toString());
+            Log.d("T", stringBuilder.toString());
 
             try {
 
@@ -149,10 +191,15 @@ public class DetailActivity extends AppCompatActivity {
                     //int firstName = Integer.parseInt(jsonObject.optString("first_name").toString());
                     //String committee = jsonObject.optString("name").toString();
                     bills += jsonObject.optString("introduced_on").toString() + ": " +
-                            jsonObject.optString("official_title").toString() + ", ";
+                            jsonObject.optString("official_title").toString() + "\n";
 
                 }
-                billsView.setText(bills);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        billsView.setText(bills);
+                    }
+                });
                 //bills = "";
             } catch (JSONException e) {
                 // Handle Error
@@ -163,6 +210,9 @@ public class DetailActivity extends AppCompatActivity {
             urlConnection.disconnect();
         }
     }
-
-
 }
+
+
+
+
+

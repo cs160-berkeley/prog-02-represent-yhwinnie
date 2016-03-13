@@ -38,7 +38,11 @@ import android.support.v4.app.ActivityCompat;
 
 import android.util.Base64;
 
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import io.fabric.sdk.android.Fabric;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,10 +67,18 @@ import org.json.JSONObject;
 import org.json.JSONException;
 import java.net.URLEncoder;
 import android.os.AsyncTask;
+import android.support.v7.widget.Toolbar;
 
-public class MainActivity extends Activity implements
+public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "bpfuB6Os7cJv3Un2MMNDEQ2ON";
+    private static final String TWITTER_SECRET = "9oN4NT6NXV3wD6BE1HsDRUVHUBHa7WCIdxoKQTU9RB8ab31dpi";
+
+
+    private Toolbar mActionBarToolbar;
 
     private Button mGoButton;
     private Button mCurrentLocationButton;
@@ -85,6 +97,8 @@ public class MainActivity extends Activity implements
     public String county;
     public String countyCheck;
 
+    public List<String>bioGuideList;
+
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -96,7 +110,11 @@ public class MainActivity extends Activity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
         setContentView(R.layout.activity_main);
+
+
 
         mGoButton = (Button) findViewById(R.id.goButton);
         mCurrentLocationButton = (Button) findViewById(R.id.currentButton);
@@ -178,7 +196,6 @@ public class MainActivity extends Activity implements
                                                     //JSONObject countyObject = types.getJSONObject(k);
 
                                                     countyCheck = types.getString(k);
-                                                    Log.d("T", "OOOO" + countyCheck);
 
                                                     if (countyCheck.equals("administrative_area_level_2")) {
                                                         county = obj.optString("long_name").toString();
@@ -214,26 +231,6 @@ public class MainActivity extends Activity implements
                         }
                     }).start();
 
-
-
-
-                    //Log.d("T", "gggg" + county);
-
-
-//                    Thread thread = new Thread(new Runnable(){
-//                        @Override
-//                        public void run() {
-//                            try {
-//                                Log.d("T", "gggg" + county);
-//                                printCongressmenFromZip(zipCodeText, county);
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    });
-//
-//                    thread.start();
-//
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -304,6 +301,8 @@ public class MainActivity extends Activity implements
                     String termEnd = jsonObject.optString("term_end").toString();
                     String bioGuideID = jsonObject.optString("bioguide_id").toString();
 
+
+
                     members.add(new Member(firstName + " " + lastName, party,
                             email, website, twitter, R.drawable.diannefeinstein, termEnd, bioGuideID));
                 }
@@ -316,6 +315,9 @@ public class MainActivity extends Activity implements
         finally {
             urlConnection.disconnect();
         }
+
+
+
 
 
         // https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=twitterapi&count=2
@@ -336,6 +338,7 @@ public class MainActivity extends Activity implements
 
         Intent sendIntent = new Intent(this, DisplayMessageActivity.class);
         sendIntent.putExtra("Members_List", members);
+        sendIntent.putExtra("ZIP CODE", zipCodeText);
         startActivity(sendIntent);
 
         members = new ArrayList<Member>();
@@ -472,6 +475,7 @@ public class MainActivity extends Activity implements
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
+
 
 
 }

@@ -1,7 +1,10 @@
 package com.example.yhwinnie.representapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +20,9 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,125 +30,124 @@ import android.widget.AdapterView;
 
 import javax.net.ssl.HttpsURLConnection;
 import android.widget.LinearLayout;
+import android.support.v7.widget.Toolbar;
+
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterApiClient;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterAuthToken;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
+import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.core.services.StatusesService;
+import com.twitter.sdk.android.tweetui.UserTimeline;
+
+import io.fabric.sdk.android.Fabric;
 
 public class DisplayCurrentActivity extends AppCompatActivity {
     private List<Member> members = new ArrayList<Member>();
     private ListView list;
+    private Toolbar mActionBarToolbar;
+    private TwitterLoginButton loginButton;
+    private TwitterSession session;
+    private static final String TWITTER_KEY = "bpfuB6Os7cJv3Un2MMNDEQ2ON";
+    private static final String TWITTER_SECRET = "9oN4NT6NXV3wD6BE1HsDRUVHUBHa7WCIdxoKQTU9RB8ab31dpi";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET );
+        Fabric.with(this, new Twitter(authConfig));
         setContentView(R.layout.content_display_current);
 
-        //populateMemberList();
+        loginButton = (TwitterLoginButton)findViewById(R.id.twitter_login_button);
+        loginButton.setCallback(new LoginHandler());
 
-        members = (ArrayList<Member>) getIntent().getSerializableExtra("Members_List");
-        ArrayAdapter<Member> adapter = new myListAdapter();
-        ListView list = (ListView) findViewById(R.id.listView);
-        list.setAdapter(adapter);
+        assert getSupportActionBar() != null;
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(final AdapterView<?> parent, View view, int position, long id) {
-                    Member currentMember = members.get(position);
-                    String termEnd = currentMember.getTermEnd();
-                    String party = currentMember.getParty();
-                    String bioID = currentMember.getBioGuideID();
+        session = Twitter.getSessionManager().getActiveSession();
+        TwitterAuthToken authToken = session.getAuthToken();
+        String token = authToken.token;
+        String secret = authToken.secret;
 
 
-                    String info = termEnd + ", " + party + ", " + bioID;
+        TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
+        // Can also use Twitter directly: Twitter.getApiClient()
+        StatusesService statusesService = twitterApiClient.getStatusesService();
+        statusesService.show(524971209851543553L, null, null, null, new Callback<Tweet>() {
+            @Override
+            public void success(Result<Tweet> result) {
+                //Do something with result, which provides a Tweet inside of result.data
+                members = (ArrayList<Member>) getIntent().getSerializableExtra("Members_List");
+                ArrayAdapter<Member> adapter = new myListAdapter();
+                ListView list = (ListView) findViewById(R.id.listView);
 
-                    Intent requestLink = new Intent(DisplayCurrentActivity.this, DetailActivity.class);
-                    requestLink.putExtra("Info", info);
-                    //requestLink.putExtra("INDEX", position);
+                list.setAdapter(adapter);
 
-                    startActivity(requestLink);
-                }
-            });
+                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(final AdapterView<?> parent, View view, int position, long id) {
+                        Member currentMember = members.get(position);
+                        String termEnd = currentMember.getTermEnd();
+                        String party = currentMember.getParty();
+                        String bioID = currentMember.getBioGuideID();
+                        String name = currentMember.getName();
+
+                        String info = termEnd + ", " + party + ", " + bioID + ", " + name;
+
+                        Intent requestLink = new Intent(DisplayCurrentActivity.this, DetailActivity.class);
+                        requestLink.putExtra("Info", info);
+
+                        startActivity(requestLink);
+                    }
+                });
+            }
+
+            public void failure(TwitterException exception) {
+                //Do something on failure
+            }
+        });
+
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        loginButton.onActivityResult(requestCode, resultCode, data);
+    }
 
-//    public void detailButton(View view) {
-//
-//        int index = list.getPositionForView((LinearLayout)view.getParent());
-//        String termEnd = members.get(0).getTermEnd();
-//        String party =  members.get(0).getParty();
-//        String bioID = members.get(0).getBioGuideID();
-//
-//        Intent requestLink = new Intent(DisplayCurrentActivity.this, DetailActivity.class);
-//        requestLink.putExtra("term_end", termEnd);
-//        requestLink.putExtra("party", party);
-//        requestLink.putExtra("bioID", bioID);
-//
-//        startActivity(requestLink);
-//
-//    }
+    private class LoginHandler extends Callback<TwitterSession> {
+        @Override
+        public void success(Result<TwitterSession> twitterSessionResult) {
+            String output = "Status: " +
+                    "Your login was successful " +
+                    twitterSessionResult.data.getUserName() +
+                    "\nAuth Token Received: " +
+                    twitterSessionResult.data.getAuthToken().token;
+            Log.d("T", output);
+            TwitterSession session = Twitter.getSessionManager().getActiveSession();
+            TwitterAuthToken authToken = session.getAuthToken();
+            String token = authToken.token;
+            String secret = authToken.secret;
 
-//    public void detailInfo(String lat, String lon) throws IOException {
-//
-//        //congress.api.sunlightfoundation.com/legislators/locate?latitude=37.7833&longitude=122.4167&apikey=fcf68604828148359ae76a9a23ebfd71
-//        String apikey = "fcf68604828148359ae76a9a23ebfd71";
-//        String baseURL = "https://congress.api.sunlightfoundation.com";
-//        String lonLatAddition = "/legislators/locate?latitude="+lat+"&longitude="+lon+"&apikey="+apikey;
-//        String url = baseURL + lonLatAddition;
-//        URL apiUrl = new URL(url);
-//        HttpsURLConnection urlConnection = (HttpsURLConnection) apiUrl.openConnection();
-//        try {
-//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection
-//                    .getInputStream()));
-//            StringBuilder stringBuilder = new StringBuilder();
-//            String line;
-//            while ((line = bufferedReader.readLine()) != null) {
-//                stringBuilder.append(line).append("\n");
-//            }
-//            bufferedReader.close();
-//            Log.d("T", stringBuilder.toString());
-//
-//            try {
-//
-//                JSONObject reader = new JSONObject(stringBuilder.toString());
-//                JSONArray result = reader.optJSONArray("results");
-//
-//                //Iterate the jsonArray and print the info of JSONObjects
-//                for(int i = 0; i < result.length(); i++) {
-//                    JSONObject jsonObject = result.getJSONObject(i);
-//
-//                    String firstName = jsonObject.optString("first_name").toString();
-//                    String lastName = jsonObject.optString("last_name").toString();
-//                    String party = jsonObject.optString("party").toString();
-//                    String email = jsonObject.optString("oc_email").toString();
-//                    String website = jsonObject.optString("website").toString();
-//                    String twitter = jsonObject.optString("twitter_id").toString();
-//
-//                    String termEnd = jsonObject.optString("term_end").toString();
-//                    String bioGuideID = jsonObject.optString("bioguide_id").toString();
-//
-//                    members.add(new Member(firstName + " " + lastName, party,
-//                            email, website, twitter, R.drawable.diannefeinstein, termEnd, bioGuideID));
-//
-//
-//                }
-//
-//                Intent startDetailActivity = new Intent(this, DetailActivity.class);
-//                startActivity(startDetailActivity);
-//
-//                Intent sendIntent = new Intent(this, DisplayCurrentActivity.class);
-//                sendIntent.putExtra("Members_List", members);
-//                startActivity(sendIntent);
-//                members = new ArrayList<Member>();
-//
-//            } catch (JSONException e) {
-//                // Handle Error
-//
-//            }
-//
-//
-//        }
-//        finally {
-//            urlConnection.disconnect();
-//        }
-//    }
+            //https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=twitterapi&count=2
+
+        }
+
+        @Override
+        public void failure(TwitterException e) {
+
+        }
+    }
+
 
     private class myListAdapter extends ArrayAdapter<Member> {
         public myListAdapter() {
@@ -152,10 +156,9 @@ public class DisplayCurrentActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             //Make sure we have a view to work with (may have been given null)
-            View itemView = convertView;
-            if (itemView == null) {
-                itemView = getLayoutInflater().inflate(R.layout.members_item, parent, false);
-            }
+
+            final View itemView = getLayoutInflater().inflate(R.layout.members_item, parent, false);
+
 
             // Find the member to work with
             Member currentMember = members.get(position);
@@ -165,10 +168,14 @@ public class DisplayCurrentActivity extends AppCompatActivity {
             imageView.setImageResource(currentMember.getIcon());
 
             TextView name = (TextView) itemView.findViewById(R.id.textView3);
-            name.setText(currentMember.getName());
+            name.setText(currentMember.getName().toUpperCase());
 
             TextView party = (TextView) itemView.findViewById(R.id.textView4);
-            party.setText("Party: " + currentMember.getParty());
+            if (currentMember.getParty().equalsIgnoreCase("D"))  {
+                party.setText("Democrat");
+            }else{
+                party.setText("Republican");
+            }
 
             TextView email = (TextView) itemView.findViewById(R.id.textView5);
             email.setText(currentMember.getEmail());
@@ -178,6 +185,53 @@ public class DisplayCurrentActivity extends AppCompatActivity {
 
             TextView tweet = (TextView) itemView.findViewById(R.id.textView7);
             tweet.setText("@" + currentMember.getTweet());
+
+            ImageView bioPicture = (ImageView) itemView.findViewById(R.id.imageView);
+
+            ////https://theunitedstates.io/images/congress/[size]/[bioguide].jpg
+            String id = currentMember.getBioGuideID();
+            String url = "https://theunitedstates.io/images/congress/225x275/"+id+".jpg";
+
+            try {
+                URL imageURL = new URL(url);
+                Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(url).getContent());
+                bioPicture.setImageBitmap(bitmap);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            UserTimeline userTimeline = new UserTimeline.Builder()
+                    .screenName(currentMember.getTweet()).build();
+
+
+            TwitterCore.getInstance().getApiClient(session).getStatusesService()
+                    .userTimeline(null,
+                            currentMember.getTweet(),
+                            1,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            new Callback<List<Tweet>>() {
+                                @Override
+                                public void success(Result<List<Tweet>> result) {
+                                    for (Tweet t : result.data) {
+                                        android.util.Log.d("twittercommunity", "tweet is " + t.text);
+                                        TextView tweet = (TextView) itemView.findViewById(R.id.textView7);
+                                        tweet.setText("Latest tweet: " + t.text);
+                                    }
+                                }
+
+                                @Override
+                                public void failure(TwitterException exception) {
+                                    android.util.Log.d("twittercommunity", "exception " + exception);
+                                }
+                            });
+
 
             return itemView;
 
