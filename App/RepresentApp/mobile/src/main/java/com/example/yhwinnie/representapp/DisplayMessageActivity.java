@@ -177,7 +177,7 @@ public class DisplayMessageActivity extends AppCompatActivity {
 
             // Fill the view
             ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
-            imageView.setImageResource(currentMember.getIcon());
+//            imageView.setImageResource(currentMember.getIcon());
 
             TextView name = (TextView) itemView.findViewById(R.id.textView3);
             name.setText(currentMember.getName().toUpperCase());
@@ -202,6 +202,7 @@ public class DisplayMessageActivity extends AppCompatActivity {
             ////https://theunitedstates.io/images/congress/[size]/[bioguide].jpg
             String id = currentMember.getBioGuideID();
             String url = "https://theunitedstates.io/images/congress/225x275/"+id+".jpg";
+
 
             try {
                 URL imageURL = new URL(url);

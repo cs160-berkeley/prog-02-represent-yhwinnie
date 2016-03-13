@@ -63,6 +63,13 @@ public class DisplayCurrentActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+//        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(mActionBarToolbar);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+
+        getSupportActionBar().setTitle("CURRENT LOCATION");
+
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET );
         Fabric.with(this, new Twitter(authConfig));
         setContentView(R.layout.content_display_current);
@@ -165,7 +172,7 @@ public class DisplayCurrentActivity extends AppCompatActivity {
 
             // Fill the view
             ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
-            imageView.setImageResource(currentMember.getIcon());
+            //imageView.setImageResource(currentMember.getIcon());
 
             TextView name = (TextView) itemView.findViewById(R.id.textView3);
             name.setText(currentMember.getName().toUpperCase());

@@ -39,8 +39,9 @@
 
         <activity
             android:name=".DisplayMessageActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/title_activity_display_message"
-            android:theme="@style/AppTheme.NoActionBar">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,7 +53,7 @@
         <activity
             android:name=".DisplayCurrentActivity"
             android:label="@string/title_activity_display_current"
-            android:theme="@style/AppTheme.NoActionBar">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -60,7 +61,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".DetailActivity"></activity>
+        <activity android:name=".DetailActivity"
+        ></activity>
         <service android:name=".PhoneToWatchService"/>
 
         <service android:name=".PhoneListenerService"

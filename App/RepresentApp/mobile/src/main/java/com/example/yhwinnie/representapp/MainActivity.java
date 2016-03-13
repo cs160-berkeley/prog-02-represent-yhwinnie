@@ -1,5 +1,7 @@
 package com.example.yhwinnie.representapp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -43,6 +45,7 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import io.fabric.sdk.android.Fabric;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -243,6 +246,8 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
 
+                // http://maps.googleapis.com/maps/api/geocode/json?latlng=39.76144296429947,-104.8011589050293&sensor=false
+
 
 
                 Thread thread = new Thread(new Runnable(){
@@ -304,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
                     members.add(new Member(firstName + " " + lastName, party,
-                            email, website, twitter, R.drawable.diannefeinstein, termEnd, bioGuideID));
+                            email, website, twitter, "url", termEnd, bioGuideID));
                 }
 
 
@@ -388,7 +393,7 @@ public class MainActivity extends AppCompatActivity implements
                     String bioGuideID = jsonObject.optString("bioguide_id").toString();
 
                     members.add(new Member(firstName + " " + lastName, party,
-                            email, website, twitter, R.drawable.diannefeinstein, termEnd, bioGuideID));
+                            email, website, twitter, "url", termEnd, bioGuideID));
 
 
                 }
@@ -398,14 +403,16 @@ public class MainActivity extends AppCompatActivity implements
 
             }
 
+            String send =  stringBuilder.toString() + "|" + county;
             Intent sendIntentToWatch = new Intent(getBaseContext(), PhoneToWatchService.class);
             sendIntentToWatch.putExtra("Path", "phoneToWatch");
-            sendIntentToWatch.putExtra("JSON", stringBuilder.toString());
+            sendIntentToWatch.putExtra("JSON", send);
 
             startService(sendIntentToWatch);
 
             Intent sendIntent = new Intent(this, DisplayCurrentActivity.class);
             sendIntent.putExtra("Members_List", members);
+            sendIntent.putExtra("County", "ALAMEDA COUNTY");
             startActivity(sendIntent);
             members = new ArrayList<Member>();
 
