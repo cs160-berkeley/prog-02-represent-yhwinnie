@@ -5,7 +5,11 @@
     <uses-feature android:name="android.hardware.type.watch" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permisssion.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
@@ -62,6 +66,11 @@
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </service>
+
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="2bb7fb1475af50c5848db1a3c7323698f321eb4d" />
 
         <activity
             android:name=".Main2Activity"

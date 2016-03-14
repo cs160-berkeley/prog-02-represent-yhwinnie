@@ -29,6 +29,11 @@ import java.io.InputStreamReader;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
+import android.content.Context;
+import android.os.Vibrator;
+import android.app.AlertDialog;
 
 public class MainActivity extends Activity {
 
@@ -39,6 +44,7 @@ public class MainActivity extends Activity {
     private float x1, x2, y1, y2;
     private Bitmap bitmap;
     private String id;
+    private ShakeListener mShaker;
 
     private ArrayList<Member> members = new ArrayList<Member>();
 
@@ -55,6 +61,19 @@ public class MainActivity extends Activity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_main);
+
+//        final Vibrator vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+//
+//        mShaker = new ShakeListener(this);
+//        mShaker.setOnShakeListener(new ShakeListener.OnShakeListener() {
+//            public void onShake() {
+//                vibe.vibrate(100);
+//                new AlertDialog.Builder(MainActivity.this)
+//                        .setPositiveButton(android.R.string.ok, null)
+//                        .setMessage("Shooken!")
+//                        .show();
+//            }
+//        });
 
         mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
 
@@ -106,10 +125,12 @@ public class MainActivity extends Activity {
 
 
                 mRepName.setText(firstName + " " + lastName);
-                if (party.equalsIgnoreCase("D")) {
+                if (party.equals("D")) {
                     mParty.setText("Democrat");
-                }else {
+                }else if (party.equals("R")) {
                     mParty.setText("Republican");
+                }else{
+                    mParty.setText("Independent");
                 }
 
 
@@ -171,6 +192,7 @@ public class MainActivity extends Activity {
                         y2 = event.getY();
                     }
 
+
                     if (x1 > x2) {
                         if (index < value.length() - 1) {
 
@@ -199,8 +221,10 @@ public class MainActivity extends Activity {
 
                                 if (party.equalsIgnoreCase("D")) {
                                     mParty.setText("Democrat");
-                                }else {
+                                }else if (party.equalsIgnoreCase("R")) {
                                     mParty.setText("Republican");
+                                }else{
+                                    mParty.setText("Independent");
                                 }
 
                                 //index += 1;
@@ -256,10 +280,13 @@ public class MainActivity extends Activity {
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
         }
+
+
+    }
     }
 
 
-}
+
 
 
 

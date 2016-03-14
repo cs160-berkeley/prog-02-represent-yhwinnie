@@ -1,20 +1,21 @@
 # PROG 02: Represent!
 
-Briefly describe your app here.
+An Phone to watch connected app to deliver facts to voters. 
 
 ## Authors
 
-FirstName LastName ([your_email@berkeley.edu](mailto:your_email@berkeley.edu))
+Winnie Wen (wiwen@berkeley.edu](mailto:wiwen@berkeley.edu))
 
 ## Demo Video
 
-See [your demo video title here] (https://link_to_your_video)
+See Represent Prog-2C (https://www.youtube.com/watch?v=XH7fzg9Qdv0)
 
 ## Screenshots
 
-<img src="screenshots/main.png" height="400" alt="Screenshot"/>
+<img src="screenshots/mainpage.png" height="400" alt="Screenshot"/>
+<img src="screenshots/secondpage.png" height="400" alt="Screenshot"/>
+<img src="screenshots/thirdpage.png" height="400" alt="Screenshot"/>
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Any other support
+Catnip creator

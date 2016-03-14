@@ -83,8 +83,10 @@ public class DetailActivity extends AppCompatActivity {
 
         if (party.equalsIgnoreCase("D")) {
             partyView.setText("Democrat");
-        }else {
+        }else if (party.equalsIgnoreCase("R")) {
             partyView.setText("Republican");
+        } else {
+            partyView.setText("Independent");
         }
         endTermView.setText(termEnd + "\n");
 
