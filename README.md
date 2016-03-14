@@ -4,7 +4,7 @@ An Phone to watch connected app to deliver facts to voters.
 
 ## Authors
 
-Winnie Wen (wiwen@berkeley.edu](mailto:wiwen@berkeley.edu))
+Winnie Wen ([wiwen@berkeley.edu](mailto:wiwen@berkeley.edu))
 
 ## Demo Video
 
