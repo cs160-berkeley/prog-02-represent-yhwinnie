@@ -1,6 +1,6 @@
 # PROG 02: Represent!
 
-An Phone to watch connected app to deliver facts to voters. 
+An Phone to watch connected app to deliver facts to voters. The app made use of the Sunlight API, Google Map Geocoding API, Farbic API, Twitter API, etc. 
 
 ## Authors
 
